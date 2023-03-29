@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "wd2tantivy"
+version = "0.1.0"
+description = "A program for generating a tantivy index from a Wikidata dump."
+authors = ["cyanic-selkie <cyanic-selkie@protonmail.com>"]
+readme = "README.md"
+license = "MIT"
+keywords = ["nlp", "natural-language-processing", "wikidata"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+spacy = "^3.5.1"
+tantivy = {git = "https://github.com/quickwit-oss/tantivy-py.git"}
+xopen = "^1.7.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+wd2tantivy = "wd2tantivy.generate:main"
