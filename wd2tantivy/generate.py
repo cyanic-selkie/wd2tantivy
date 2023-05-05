@@ -1,5 +1,4 @@
 import tantivy
-import xopen
 import argparse
 import unicodedata
 import spacy

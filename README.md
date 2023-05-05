@@ -34,8 +34,7 @@ After downloading the dump and the model, you can generate the tantivy index wit
 
 ```bash
 pigz -dc latest-truthy.nt.gz | \
-poetry run wd2tantivy --input latest-truthy.nt.gz \
-                      --language "${LANGUAGE}" \
+poetry run wd2tantivy --language "${LANGUAGE}" \
                       --spacy-model "${SPACY_MODEL}" \
                       --output "${OUTPUT_DIR}"
 ```
