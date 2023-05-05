@@ -62,7 +62,7 @@ def worker(input: Tuple[str, str]):
     if alias == "":
         return None
 
-    lemmatized_alias = " ".join(token.lemma_.lower() for token in nlp(alias) if not token.is_stop)
+    lemmatized_alias = " ".join(token.lemma_.lower() for token in nlp(alias) if not token.is_stop and not token.is_punct)
 
     return qid, alias, lemmatized_alias, priority
 
@@ -88,14 +88,14 @@ def main():
 
             name = None
             priority = None
-            aliases = []
+            aliases = set()
 
             for _, _alias, _lemmatized_alias, _priority in output:
                 if not name or _priority > priority:
                     name = _alias
                     priority = _priority
 
-                aliases.append(_lemmatized_alias)
+                aliases.add(_lemmatized_alias)
 
             if len(aliases) == 0:
                 continue
@@ -103,7 +103,7 @@ def main():
             writer.add_document(tantivy.Document(
                 qid=qid,
                 name=name,
-                alias=list(set(aliases)),
+                alias=list(aliases),
             ))
 
         writer.commit()
