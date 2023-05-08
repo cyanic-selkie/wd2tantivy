@@ -57,12 +57,15 @@ def worker(input: Tuple[str, str]):
 
     line = line[:-(len(language) + 3)]
     alias = line.encode('ascii').decode('unicode-escape')[1:-1]
-    alias = unicodedata.normalize("NFC", alias)
+    alias = unicodedata.normalize("NFC", alias.strip())
 
     if alias == "":
         return None
 
     lemmatized_alias = " ".join(token.lemma_.lower() for token in nlp(alias) if not token.is_stop and not token.is_punct)
+
+    if lemmatized_alias == "":
+        return None
 
     return qid, alias, lemmatized_alias, priority
 
