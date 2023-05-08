@@ -6,6 +6,7 @@ from itertools import groupby, islice, repeat
 from multiprocessing import Pool, cpu_count
 from typing import List, Tuple
 import sys
+import pyarrow.parquet as pq
 
 nlp = None
 def worker_init(model: str):
@@ -70,10 +71,12 @@ def main():
     parser.add_argument("--output", type=str, required=True)
     parser.add_argument("--language", type=str, required=True)
     parser.add_argument("--spacy-model", type=str, required=True)
+    parser.add_argument("--nodes", type=str, required=True)
     args = parser.parse_args()
 
     schema_builder = tantivy.SchemaBuilder()
     schema_builder.add_integer_field("qid", stored=True, indexed=True)
+    schema_builder.add_integer_field("idx", stored=True, indexed=True)
     schema_builder.add_text_field("name", stored=True, index_option='basic')
     schema_builder.add_text_field("alias", stored=True)
     schema = schema_builder.build()
@@ -82,7 +85,11 @@ def main():
     writer = index.writer()
 
     with Pool(processes=cpu_count(), initializer=worker_init, initargs=(args.spacy_model,)) as pool:
+        nodes = {qid: i for i, qid in enumerate(pq.read_table(args.nodes)["qid"].to_pylist())}
         for qid, output in groupby(filter(None, pool.imap(worker, zip(sys.stdin, repeat(args.language)), chunksize=1000)), lambda x: x[0]):
+            if qid not in nodes:
+                continue
+
             output = list(output)
 
             name = None
@@ -101,6 +108,7 @@ def main():
 
             writer.add_document(tantivy.Document(
                 qid=qid,
+                idx=nodes[qid],
                 name=name,
                 alias=list(aliases),
             ))
