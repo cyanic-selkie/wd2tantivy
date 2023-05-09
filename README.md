@@ -50,5 +50,5 @@ Each document in the index contains 3 stored and indexed fields:
 
 ## Performance
 
-`wd2tantivy` uses as many threads as there are logical CPU cores. On a dump from March 2023, containing \~100,000,000 nodes, it takes \~5 hours to complete for English with peak memory usage of \~2.5MB on an AMD Ryzen Threadripper 3970X CPU and an SSD.
+`wd2tantivy` uses as many threads as there are logical CPU cores. On a dump from March 2023, containing \~100,000,000 nodes, it takes \~5 hours to complete for English with peak memory usage of \~70GB on an AMD Ryzen Threadripper 3970X CPU and an SSD.
 
